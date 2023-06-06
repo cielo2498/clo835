@@ -13,15 +13,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Login to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          registry: 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment1
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1 # Replace with your desired AWS region
 
+      - name: Login to Amazon ECR
+        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment1
+        env:
+          ECR_REGISTRY: 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment1
+
       - name: Build and push container image
         run: |
-          docker build -t 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment1:latest .
-          docker push 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment1:latest
+          docker build -t $ECR_REGISTRY:latest .
+          docker push $ECR_REGISTRY:latest
