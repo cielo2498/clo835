@@ -3,7 +3,7 @@ name: Build and Deploy Containers
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build-and-deploy:
@@ -15,10 +15,13 @@ jobs:
 
       - name: Configure AWS credentials
         run: |
-          echo "[default]" >> $HOME/.aws/credentials
+          mkdir -p $HOME/.aws
+          touch $HOME/.aws/credentials
+          echo "[default]" > $HOME/.aws/credentials
           echo "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $HOME/.aws/credentials
           echo "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $HOME/.aws/credentials
-          echo "region=us-east-1" >> $HOME/.aws/config
+          touch $HOME/.aws/config
+          echo "region=us-east-1" > $HOME/.aws/config
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -41,5 +44,3 @@ jobs:
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./path/to/repo2
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
-      # Add more steps for other Docker images to build and deploy
