@@ -1,0 +1,27 @@
+name: Build and Push Container
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registry: 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1 # Replace with your desired AWS region
+
+      - name: Build and push container image
+        run: |
+          docker build -t 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment1:latest .
+          docker push 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment1:latest
