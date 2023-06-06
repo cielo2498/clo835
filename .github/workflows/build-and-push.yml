@@ -23,7 +23,7 @@ jobs:
           echo "region = us-east-1" >> $HOME/.aws/config
 
       - name: Login to Amazon ECR
-        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment1
+        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin https://481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment1
 
       - name: Build and push Docker image
         run: |
