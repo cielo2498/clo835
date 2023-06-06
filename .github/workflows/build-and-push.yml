@@ -15,6 +15,7 @@ jobs:
 
       - name: Configure AWS credentials
         run: |
+          mkdir -p $HOME/.aws
           echo "[default]" >> $HOME/.aws/credentials
           echo "aws_access_key_id = $AWS_ACCESS_KEY_ID" >> $HOME/.aws/credentials
           echo "aws_secret_access_key = $AWS_SECRET_ACCESS_KEY" >> $HOME/.aws/credentials
@@ -22,7 +23,7 @@ jobs:
           echo "region = us-east-1" >> $HOME/.aws/config
 
       - name: Login to Amazon ECR
-        run: aws ecr get-login-password --region <your_aws_region> | docker login --username AWS --password-stdin <ecr_repository_url>
+        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment1
 
       - name: Build and push Docker image
         run: |
