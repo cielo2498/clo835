@@ -13,25 +13,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Configure AWS credentials
-        run: |
-          echo "[default]" >> $HOME/.aws/credentials
-          echo "aws_access_key_id = $AWS_ACCESS_KEY_ID" >> $HOME/.aws/credentials
-          echo "aws_secret_access_key = $AWS_SECRET_ACCESS_KEY" >> $HOME/.aws/credentials
-          echo "[default]" >> $HOME/.aws/config
-          echo "region = us-east-1" >> $HOME/.aws/config
-
       - name: Login to Amazon ECR
-        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment1
+        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin https://481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment1
 
-      - name: Build and tag Docker image
-        env:
-          ECR_REGISTRY: 481510018989.dkr.ecr.us-east-1.amazonaws.com
-          ECR_REPOSITORY: clo835-assignment1
-          IMAGE_TAG: v0.1
+      - name: Build and push Docker image
         run: |
-          cd cieloapp/
-          ls -ltra
-          # Docker build command
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker build -t 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment1:latest .
+          docker push 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment1:latest
