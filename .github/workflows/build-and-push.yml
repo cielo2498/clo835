@@ -14,14 +14,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Configure AWS credentials
-        run: |
-          mkdir -p $HOME/.aws
-          touch $HOME/.aws/credentials
-          echo "[default]" > $HOME/.aws/credentials
-          echo "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $HOME/.aws/credentials
-          echo "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $HOME/.aws/credentials
-          touch $HOME/.aws/config
-          echo "region=us-east-1" > $HOME/.aws/config
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -30,17 +27,17 @@ jobs:
       - name: Build and push Docker image 1
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: clo835-repo1
+          ECR_REPOSITORY: 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment1
           IMAGE_TAG: v1
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./path/to/repo1
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./cieloapp/Dockerfile
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Build and push Docker image 2
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: clo835-repo2
+          ECR_REPOSITORY: 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment1
           IMAGE_TAG: v1
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./path/to/repo2
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./cieloapp/Dockerfile
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
