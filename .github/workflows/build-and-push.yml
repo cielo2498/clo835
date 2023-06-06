@@ -22,20 +22,11 @@ jobs:
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
           AWS_REGION: us-east-1
 
-      - name: Build and push Docker image 1
+      - name: Build and push Docker image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment1-image1
+          ECR_REPOSITORY: 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment1
           IMAGE_TAG: v1
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG /cieloapp/Dockerfile
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
-      - name: Build and push Docker image 2
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment1-image2
-          IMAGE_TAG: v1
-        run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG /cieloapp/Dockerfile
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./Dockerfile
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
