@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env: # Define environment variables for all steps
+      AWS_REGION: us-east-1
 
     steps:
       - name: Check out repository
