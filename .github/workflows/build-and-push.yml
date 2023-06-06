@@ -1,12 +1,12 @@
-name: Build and Push Docker Image
+name: Build and Deploy Containers
 
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
-  build-and-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,13 +16,30 @@ jobs:
       - name: Configure AWS credentials
         run: |
           echo "[default]" >> $HOME/.aws/credentials
-          echo "aws_access_key_id = $AWS_ACCESS_KEY_ID" >> $HOME/.aws/credentials
-          echo "aws_secret_access_key = $AWS_SECRET_ACCESS_KEY" >> $HOME/.aws/credentials
+          echo "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $HOME/.aws/credentials
+          echo "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $HOME/.aws/credentials
+          echo "region=us-east-1" >> $HOME/.aws/config
 
       - name: Login to Amazon ECR
-        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin https://481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment1
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build and push Docker image
+      - name: Build and push Docker image 1
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: clo835-repo1
+          IMAGE_TAG: v1
         run: |
-          docker build -t 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment1:latest .
-          docker push 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment1:latest
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./path/to/repo1
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Build and push Docker image 2
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: clo835-repo2
+          IMAGE_TAG: v1
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./path/to/repo2
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      # Add more steps for other Docker images to build and deploy
