@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+
 jobs:
   build:
     name: Build Image
@@ -25,7 +26,7 @@ jobs:
       - name: Build, test, tag, and push image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: assignment
+          ECR_REPOSITORY: clo835_assignment1
         run: |
           # Building MySQL Docker image
           docker build -t my_db -f Dockerfile_mysql .
