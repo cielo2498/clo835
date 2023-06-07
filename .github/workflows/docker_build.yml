@@ -39,4 +39,4 @@ jobs:
           context: .
           file: Dockerfile_mysql
           push: true
-          tags: 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment:latest
+          tags: 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment:latest1
