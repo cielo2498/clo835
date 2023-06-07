@@ -8,30 +8,32 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env: # Define environment variables for all steps
+    env:
       AWS_REGION: us-east-1
+      ECR_REGISTRY: 481510018989.dkr.ecr.us-east-1.amazonaws.com
+      ECR_REPOSITORY: clo835-assignment1
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
 
+      - name: Configure AWS credentials
+        run: |
+          echo "[default]" >> $HOME/.aws/credentials
+          echo "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $HOME/.aws/credentials
+          echo "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $HOME/.aws/credentials
+          echo "aws_session_token=${{ secrets.AWS_SESSION_TOKEN }}" >> $HOME/.aws/credentials
+          echo "[default]" >> $HOME/.aws/config
+          echo "region=${{ env.AWS_REGION }}" >> $HOME/.aws/config
+
       - name: Log in to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        run: |
+          aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
         with:
-          registry: ${{ secrets.AWS_REGISTRY }}
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-
-      - name: Build MySQL Docker image
-        run: |
-          docker build -t my_db -f Dockerfile_mysql .
-          docker tag my_db:latest ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:mysql
-          docker push ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:mysql
-
-      - name: Build Application Docker image
-        run: |
-          docker build -t my_app -f Dockerfile .
-          docker tag my_app:latest ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:application
-          docker push ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:application
+          context: ./ # Change this to match your Dockerfile location
+          file: Dockerfile # Change this to match your Dockerfile location
+          push: true
+          tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
