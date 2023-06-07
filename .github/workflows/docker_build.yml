@@ -23,20 +23,20 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Verify directory contents
-        run: ls -ltra
+        run: ls -la .
 
       - name: Build and push Image 1
         uses: docker/build-push-action@v2
         with:
-          context: /clo835_summer2023_assignment1-main
-          file: /clo835_summer2023_assignment1-main/Dockerfile
+          context: .
+          file: Dockerfile
           push: true
           tags: 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment:latest
 
       - name: Build and push Image 2
         uses: docker/build-push-action@v2
         with:
-          context: /clo835_summer2023_assignment1-main
-          file: /clo835_summer2023_assignment1-main/Dockerfile_mysql
+          context: .
+          file: Dockerfile_mysql
           push: true
           tags: 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment:latest
