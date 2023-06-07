@@ -1,4 +1,4 @@
-name: Build Docker Images
+name: Build and Push Docker Images
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
     env:
       AWS_REGION: us-east-1
@@ -26,14 +26,14 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./path_to_image1_context
-          file: ./path_to_image1_dockerfile
+          file: ./Dockerfile
           push: true
-          tags: 481510018989.dkr.ecr.us-east-1.amazonaws.com/image1:latest
+          tags: 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment:latest
 
       - name: Build and push Image 2
         uses: docker/build-push-action@v2
         with:
           context: ./path_to_image2_context
-          file: ./path_to_image2_dockerfile
+          file: ./Dockerfile_mysql
           push: true
-          tags: 481510018989.dkr.ecr.us-east-1.amazonaws.com/image2:latest
+          tags: 481510018989.dkr.ecr.us-east-1.amazonaws.com/clo835-assignment:latest
